@@ -1,0 +1,587 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ella's Lemonade Stand</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="emoji">🍋</div>
+  <h1>Ella's Lemonade Stand</h1>
+  <p>Free Gummies With Every Drink 🍬</p>
+</header>
+
+
+<main>
+
+  <section class="menu">
+
+    <h2>Our Menu</h2>
+
+    <div class="cards">
+
+
+      <!-- CLASSIC LEMONADE -->
+      <div class="card" data-name="Classic Lemonade" data-price="2.00">
+
+        <div class="drink">🍋</div>
+
+        <h3>Classic Lemonade</h3>
+
+        <p>
+          Sweet, refreshing and perfectly lemony.
+        </p>
+
+        <div class="price">$2.00</div>
+
+        <button class="add-to-cart" onclick="addToCart(this)">
+          Add to Cart
+        </button>
+
+      </div>
+
+
+      <!-- PICKLE -->
+      <div class="card" data-name="Pickle" data-price="2.00">
+
+        <div class="emoji">🥒</div>
+
+        <h3>Pickle</h3>
+
+        <p>It's a pickle.</p>
+
+        <div class="price">$2.00</div>
+
+        <button class="add-to-cart" onclick="addToCart(this)">
+          Add to Cart
+        </button>
+
+      </div>
+
+
+      <!-- FLAVORED LEMONADE -->
+      <div class="card"
+           data-name="Flavored Lemonade"
+           data-price="2.00">
+
+        <h3>🍓 Flavored Lemonade</h3>
+
+        <p>
+          Choose your favorite flavor.
+        </p>
+
+        <div class="price">$2.00</div>
+
+        <button class="add-to-cart" onclick="addToCart(this)">
+          Add to Cart
+        </button>
+
+        <button class="flavor-btn" onclick="toggleFlavors()">
+          View Flavors 🍋
+        </button>
+
+        <ul id="flavor-list" class="hidden">
+
+          <li>🍓 Strawberry</li>
+          <li>❤️ Raspberry</li>
+          <li>🍑 Peach</li>
+
+        </ul>
+
+      </div>
+
+
+      <!-- WATER -->
+      <div class="card" data-name="Water" data-price="1.00">
+
+        <div class="drink">💧</div>
+
+        <h3>Water</h3>
+
+        <p>
+          It's always good to have some water.
+        </p>
+
+        <div class="price">$1.00</div>
+
+        <button class="add-to-cart" onclick="addToCart(this)">
+          Add to Cart
+        </button>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- FLOATING CART BUTTON -->
+
+<button id="cartButton" onclick="openCart()">
+  🛒 Cart <span id="cartCount">0</span>
+</button>
+
+
+<!-- CART MODAL -->
+
+<div id="cartModal" class="modal">
+
+  <div class="cart-box">
+
+    <button class="close-cart" onclick="closeCart()">
+      ×
+    </button>
+
+    <h2>🛒 Your Cart</h2>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-total">
+      Total: $<span id="cartTotal">0.00</span>
+    </div>
+
+    <button
+            class="checkout-button"
+            onclick="openCheckout()"
+    >
+      Checkout
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- CHECKOUT MODAL -->
+
+<div id="checkoutModal" class="modal">
+
+  <div class="cart-box">
+
+    <button class="close-cart" onclick="closeCheckout()">
+      ×
+    </button>
+
+    <h2>💳 Checkout</h2>
+
+    <div id="checkoutSummary"></div>
+
+    <h3>
+      Total:
+      $<span id="checkoutTotal">0.00</span>
+    </h3>
+
+    <hr>
+
+    <h3>Pay with Venmo</h3>
+
+    <p>
+      Send your payment to:
+    </p>
+
+    <div class="venmo-name">
+      @Crystal-Christy
+    </div>
+
+    <button
+            class="venmo-button"
+            onclick="payWithVenmo()"
+    >
+      💙 Open Venmo
+    </button>
+
+    <button
+            class="paid-button"
+            onclick="confirmPayment()"
+    >
+      ✅ I've Paid
+    </button>
+
+    <p id="paymentStatus"></p>
+
+  </div>
+
+</div>
+
+
+<footer>
+  Made with 🍋 and sunshine
+</footer>
+
+
+<script>
+
+  // =========================
+  // FLAVORS
+  // =========================
+
+  function toggleFlavors() {
+
+    const list =
+            document.getElementById("flavor-list");
+
+    list.classList.toggle("hidden");
+
+  }
+
+
+  // =========================
+  // CART
+  // =========================
+
+  let cart = [];
+
+
+  function addToCart(button) {
+
+    const card =
+            button.closest(".card");
+
+    const name =
+            card.dataset.name;
+
+    const price =
+            parseFloat(card.dataset.price);
+
+
+    const existingItem =
+            cart.find(item => item.name === name);
+
+
+    if (existingItem) {
+
+      existingItem.quantity++;
+
+    } else {
+
+      cart.push({
+        name: name,
+        price: price,
+        quantity: 1
+      });
+
+    }
+
+
+    updateCart();
+
+
+    button.textContent = "✓ Added!";
+
+
+    setTimeout(() => {
+
+      button.textContent = "Add to Cart";
+
+    }, 1000);
+
+  }
+
+
+  // =========================
+  // UPDATE CART
+  // =========================
+
+  function updateCart() {
+
+    const cartItems =
+            document.getElementById("cartItems");
+
+    const cartCount =
+            document.getElementById("cartCount");
+
+    const cartTotal =
+            document.getElementById("cartTotal");
+
+
+    cartItems.innerHTML = "";
+
+
+    let total = 0;
+    let itemCount = 0;
+
+
+    cart.forEach((item, index) => {
+
+      const itemTotal =
+              item.price * item.quantity;
+
+
+      total += itemTotal;
+
+      itemCount += item.quantity;
+
+
+      const itemElement =
+              document.createElement("div");
+
+
+      itemElement.className =
+              "cart-item";
+
+
+      itemElement.innerHTML = `
+
+          <div class="cart-item-info">
+
+            <div class="cart-item-name">
+              ${item.name}
+            </div>
+
+            <div class="cart-item-price">
+              $${item.price.toFixed(2)} each
+            </div>
+
+          </div>
+
+
+          <div class="quantity-controls">
+
+            <button
+              onclick="changeQuantity(${index}, -1)"
+            >
+              −
+            </button>
+
+            <span class="quantity">
+              ${item.quantity}
+            </span>
+
+            <button
+              onclick="changeQuantity(${index}, 1)"
+            >
+              +
+            </button>
+
+          </div>
+
+        `;
+
+
+      cartItems.appendChild(itemElement);
+
+    });
+
+
+    cartCount.textContent =
+            itemCount;
+
+
+    cartTotal.textContent =
+            total.toFixed(2);
+
+  }
+
+
+  // =========================
+  // QUANTITY
+  // =========================
+
+  function changeQuantity(index, amount) {
+
+    cart[index].quantity += amount;
+
+
+    if (cart[index].quantity <= 0) {
+
+      cart.splice(index, 1);
+
+    }
+
+
+    updateCart();
+
+  }
+
+
+  // =========================
+  // OPEN CART
+  // =========================
+
+  function openCart() {
+
+    updateCart();
+
+    document.getElementById("cartModal")
+            .style.display = "flex";
+
+  }
+
+
+  // =========================
+  // CLOSE CART
+  // =========================
+
+  function closeCart() {
+
+    document.getElementById("cartModal")
+            .style.display = "none";
+
+  }
+
+
+  // =========================
+  // CHECKOUT
+  // =========================
+
+  function openCheckout() {
+
+    if (cart.length === 0) {
+
+      alert("Your cart is empty!");
+
+      return;
+
+    }
+
+
+    let summary = "";
+
+    let total = 0;
+
+
+    cart.forEach(item => {
+
+      const itemTotal =
+              item.price * item.quantity;
+
+
+      total += itemTotal;
+
+
+      summary += `
+
+          <p>
+            <strong>${item.name}</strong>
+
+            × ${item.quantity}
+
+            — $${itemTotal.toFixed(2)}
+          </p>
+
+        `;
+
+    });
+
+
+    document.getElementById("checkoutSummary")
+            .innerHTML = summary;
+
+
+    document.getElementById("checkoutTotal")
+            .textContent = total.toFixed(2);
+
+
+    closeCart();
+
+
+    document.getElementById("checkoutModal")
+            .style.display = "flex";
+
+  }
+
+
+  // =========================
+  // CLOSE CHECKOUT
+  // =========================
+
+  function closeCheckout() {
+
+    document.getElementById("checkoutModal")
+            .style.display = "none";
+
+  }
+
+
+  // =========================
+  // VENMO
+  // =========================
+
+  function payWithVenmo() {
+
+    const venmoUsername =
+            "Crystal-Christy";
+
+
+    const venmoURL =
+            "https://venmo.com/u/" +
+            venmoUsername;
+
+
+    window.open(
+            venmoURL,
+            "_blank"
+    );
+
+  }
+
+
+  // =========================
+  // PAYMENT CONFIRMATION
+  // =========================
+
+  function confirmPayment() {
+
+    document.getElementById("paymentStatus")
+            .textContent =
+            "✅ Payment marked as sent!";
+
+
+    document.getElementById("paymentStatus")
+            .style.color = "green";
+
+
+    console.log(
+            "Customer says they paid:",
+            cart
+    );
+
+  }
+
+
+  // =========================
+  // CLICK OUTSIDE MODALS
+  // =========================
+
+  window.addEventListener(
+          "click",
+          function(event) {
+
+            const cartModal =
+                    document.getElementById("cartModal");
+
+            const checkoutModal =
+                    document.getElementById("checkoutModal");
+
+
+            if (event.target === cartModal) {
+
+              closeCart();
+
+            }
+
+
+            if (event.target === checkoutModal) {
+
+              closeCheckout();
+
+            }
+
+          }
+  );
+
+</script>
+
+</body>
+</html>
+```
