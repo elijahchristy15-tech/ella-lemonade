@@ -1,310 +1,362 @@
-// ==============================
-// VENMO SETTINGS
-// ==============================
+"use strict";
 
-const venmoUsername = "Crystal-Christy";
+const VENMO_USERNAME = "Crystal-Christy";
+const SALES_STORAGE_KEY = "lemonadeSales";
+const EMPTY_STATS = Object.freeze({
+  money: 0,
+  orders: 0,
+  items: 0,
+  classic: 0,
+  strawberry: 0,
+  raspberry: 0,
+  peach: 0,
+  pickle: 0,
+  water: 0
+});
 
-// =========================
-// STATS
-// =========================
+let cart = [];
 
-let stats = JSON.parse(
-    localStorage.getItem("lemonadeStats")
-) || {
-    money: 0,
-    orders: 0,
-    items: 0,
+function cloneEmptyStats() {
+  return { ...EMPTY_STATS };
+}
 
-    classic: 0,
-    strawberry: 0,
-    raspberry: 0,
-    peach: 0,
-    pickle: 0,
-    water: 0
-};
+function loadSales() {
+  try {
+    const storedSales = localStorage.getItem(SALES_STORAGE_KEY);
+    const parsedSales = storedSales ? JSON.parse(storedSales) : [];
 
+    return Array.isArray(parsedSales) ? parsedSales : [];
+  } catch (error) {
+    console.warn("Could not load local sales:", error);
+    return [];
+  }
+}
 
-function saveStats() {
-
+function saveSales(sales) {
+  try {
     localStorage.setItem(
-        "lemonadeStats",
-        JSON.stringify(stats)
+      SALES_STORAGE_KEY,
+      JSON.stringify(sales)
     );
-
+  } catch (error) {
+    console.warn("Could not save local sales:", error);
+  }
 }
 
-// =========================
-// OPEN STATS
-// =========================
-
-function openStats() {
-
-    updateStats();
-
-    document.getElementById("statsModal")
-        .style.display = "flex";
-
+function renderStats(stats) {
+  document.getElementById("statMoney").textContent = "$" + stats.money.toFixed(2);
+  document.getElementById("statOrders").textContent = String(stats.orders);
+  document.getElementById("statItems").textContent = String(stats.items);
+  document.getElementById("statClassic").textContent = String(stats.classic);
+  document.getElementById("statStrawberry").textContent = String(stats.strawberry);
+  document.getElementById("statRaspberry").textContent = String(stats.raspberry);
+  document.getElementById("statPeach").textContent = String(stats.peach);
+  document.getElementById("statPickle").textContent = String(stats.pickle);
+  document.getElementById("statWater").textContent = String(stats.water);
 }
 
+function applyItemToStats(stats, sale) {
+  const quantity = Number(sale.quantity) || 0;
+  const amount = Number(sale.amount) || 0;
 
-// =========================
-// CLOSE STATS
-// =========================
+  stats.money += amount;
+  stats.items += quantity;
 
-function closeStats() {
-
-    document.getElementById("statsModal")
-        .style.display = "none";
-
+  if (sale.product === "Classic Lemonade") {
+    stats.classic += quantity;
+  } else if (sale.product === "Strawberry Lemonade") {
+    stats.strawberry += quantity;
+  } else if (sale.product === "Raspberry Lemonade") {
+    stats.raspberry += quantity;
+  } else if (sale.product === "Peach Lemonade") {
+    stats.peach += quantity;
+  } else if (sale.product === "Pickle") {
+    stats.pickle += quantity;
+  } else if (sale.product === "Water") {
+    stats.water += quantity;
+  }
 }
 
+function buildStatsFromSales(sales) {
+  const stats = cloneEmptyStats();
+  const orderIds = new Set();
 
-// =========================
-// UPDATE STATS DISPLAY
-// =========================
+  sales.forEach((sale) => {
+    applyItemToStats(stats, sale);
+
+    if (sale.order_id) {
+      orderIds.add(sale.order_id);
+    }
+  });
+
+  stats.orders = orderIds.size;
+
+  return stats;
+}
 
 function updateStats() {
-
-    document.getElementById("statMoney")
-        .textContent =
-        "$" + stats.money.toFixed(2);
-
-    document.getElementById("statOrders")
-        .textContent =
-        stats.orders;
-
-    document.getElementById("statItems")
-        .textContent =
-        stats.items;
-
-
-    document.getElementById("statClassic")
-        .textContent =
-        stats.classic;
-
-    document.getElementById("statStrawberry")
-        .textContent =
-        stats.strawberry;
-
-    document.getElementById("statRaspberry")
-        .textContent =
-        stats.raspberry;
-
-    document.getElementById("statPeach")
-        .textContent =
-        stats.peach;
-
-    document.getElementById("statPickle")
-        .textContent =
-        stats.pickle;
-
-    document.getElementById("statWater")
-        .textContent =
-        stats.water;
-
+  renderStats(buildStatsFromSales(loadSales()));
 }
 
+function toggleFlavors() {
+  const list = document.getElementById("flavor-list");
+  list.classList.toggle("hidden");
+}
 
-// =========================
-// RECORD SALE
-// =========================
+function getFlavorName() {
+  const flavor = prompt(
+    "Choose a flavor:\n\n" +
+      "1 - Strawberry\n" +
+      "2 - Raspberry\n" +
+      "3 - Peach"
+  );
+
+  if (!flavor) {
+    return null;
+  }
+
+  if (flavor === "1") {
+    return "Strawberry Lemonade";
+  }
+
+  if (flavor === "2") {
+    return "Raspberry Lemonade";
+  }
+
+  if (flavor === "3") {
+    return "Peach Lemonade";
+  }
+
+  alert("Please enter 1, 2, or 3.");
+  return null;
+}
+
+function addToCart(button) {
+  const card = button.closest(".card");
+  let name = card.dataset.name;
+  const price = Number.parseFloat(card.dataset.price);
+
+  if (name === "Flavored Lemonade") {
+    name = getFlavorName();
+
+    if (!name) {
+      return;
+    }
+  }
+
+  const existingItem = cart.find((item) => item.name === name);
+
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      name: name,
+      price: price,
+      quantity: 1
+    });
+  }
+
+  updateCart();
+
+  button.textContent = "Added!";
+
+  window.setTimeout(() => {
+    button.textContent = "Add to Cart";
+  }, 1000);
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cartItems");
+  const cartCount = document.getElementById("cartCount");
+  const cartTotal = document.getElementById("cartTotal");
+  let total = 0;
+  let itemCount = 0;
+
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    const itemTotal = item.price * item.quantity;
+    const itemElement = document.createElement("div");
+
+    total += itemTotal;
+    itemCount += item.quantity;
+
+    itemElement.className = "cart-item";
+    itemElement.innerHTML =
+      '<div class="cart-item-info">' +
+      '  <div class="cart-item-name">' + item.name + "</div>" +
+      '  <div class="cart-item-price">$' + item.price.toFixed(2) + " each</div>" +
+      "</div>" +
+      '<div class="quantity-controls">' +
+      '  <button type="button" onclick="changeQuantity(' + index + ', -1)">&minus;</button>' +
+      '  <span class="quantity">' + item.quantity + "</span>" +
+      '  <button type="button" onclick="changeQuantity(' + index + ', 1)">+</button>' +
+      "</div>";
+
+    cartItems.appendChild(itemElement);
+  });
+
+  cartCount.textContent = String(itemCount);
+  cartTotal.textContent = total.toFixed(2);
+}
+
+function changeQuantity(index, amount) {
+  const item = cart[index];
+
+  if (!item) {
+    return;
+  }
+
+  item.quantity += amount;
+
+  if (item.quantity <= 0) {
+    cart.splice(index, 1);
+  }
+
+  updateCart();
+}
+
+function openCart() {
+  updateCart();
+  document.getElementById("cartModal").style.display = "flex";
+}
+
+function closeCart() {
+  document.getElementById("cartModal").style.display = "none";
+}
+
+function openCheckout() {
+  const checkoutSummary = document.getElementById("checkoutSummary");
+  const checkoutTotal = document.getElementById("checkoutTotal");
+  const paymentStatus = document.getElementById("paymentStatus");
+  let summary = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  paymentStatus.textContent = "";
+  paymentStatus.style.color = "";
+
+  cart.forEach((item) => {
+    const itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+    summary +=
+      "<p><strong>" +
+      item.name +
+      "</strong> x " +
+      item.quantity +
+      " - $" +
+      itemTotal.toFixed(2) +
+      "</p>";
+  });
+
+  checkoutSummary.innerHTML = summary;
+  checkoutTotal.textContent = total.toFixed(2);
+
+  closeCart();
+  document.getElementById("checkoutModal").style.display = "flex";
+}
+
+function closeCheckout() {
+  document.getElementById("checkoutModal").style.display = "none";
+}
+
+function payWithVenmo() {
+  const venmoUrl = "https://venmo.com/u/" + VENMO_USERNAME;
+  window.open(venmoUrl, "_blank", "noopener");
+}
 
 function recordSale() {
+  if (cart.length === 0) {
+    return false;
+  }
 
-    if (cart.length === 0) {
-        return;
-    }
+  const orderId =
+    window.crypto && typeof window.crypto.randomUUID === "function"
+      ? window.crypto.randomUUID()
+      : "order-" + Date.now();
 
+  const existingSales = loadSales();
+  const newSales = cart.map((item) => ({
+    order_id: orderId,
+    product: item.name,
+    quantity: item.quantity,
+    amount: item.price * item.quantity,
+    created_at: new Date().toISOString()
+  }));
 
-    let total = 0;
-    let items = 0;
+  saveSales(existingSales.concat(newSales));
+  updateStats();
 
-
-    cart.forEach(item => {
-
-        total +=
-            item.price * item.quantity;
-
-        items +=
-            item.quantity;
-
-
-        // Product tracking
-
-        if (item.name === "Classic Lemonade") {
-
-            stats.classic += item.quantity;
-
-        }
-
-        else if (
-            item.name === "Strawberry Lemonade"
-        ) {
-
-            stats.strawberry += item.quantity;
-
-        }
-
-        else if (
-            item.name === "Raspberry Lemonade"
-        ) {
-
-            stats.raspberry += item.quantity;
-
-        }
-
-        else if (
-            item.name === "Peach Lemonade"
-        ) {
-
-            stats.peach += item.quantity;
-
-        }
-
-        else if (item.name === "Pickle") {
-
-            stats.pickle += item.quantity;
-
-        }
-
-        else if (item.name === "Water") {
-
-            stats.water += item.quantity;
-
-        }
-
-    });
-
-
-    stats.money += total;
-
-    stats.items += items;
-
-    stats.orders++;
-
-
-    saveStats();
-
-    updateStats();
-
+  return true;
 }
-
-// ==============================
-// OPEN VENMO PAYMENT
-// ==============================
-
-function openVenmoPayment() {
-    const total = getOrderTotal();
-
-    document.getElementById("venmoUsername").textContent =
-        "@" + venmoUsername;
-
-    document.getElementById("venmoAmount").textContent =
-        total.toFixed(2);
-
-    document.getElementById("venmoModal").style.display = "block";
-}
-
-
-// ==============================
-// CLOSE MODAL
-// ==============================
-
-function closeVenmoPayment() {
-    document.getElementById("venmoModal").style.display = "none";
-}
-
-
-// ==============================
-// OPEN VENMO
-// ==============================
-
-function openVenmoApp() {
-    const total = getOrderTotal();
-
-    const venmoURL =
-        "https://venmo.com/u/" +
-        venmoUsername;
-
-    window.open(venmoURL, "_blank");
-}
-
-
-// ==============================
-// CUSTOMER SAYS THEY PAID
-// ==============================
 
 function confirmPayment() {
-    const status = document.getElementById("paymentStatus");
+  const paymentStatus = document.getElementById("paymentStatus");
 
-    status.textContent =
-        "✅ Payment marked as sent. We'll verify it before completing your order.";
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
 
-    status.style.color = "green";
+  const success = recordSale();
 
-    closeVenmoPayment();
+  if (!success) {
+    return;
+  }
+
+  paymentStatus.textContent = "Payment marked as sent! Saved on this device.";
+  paymentStatus.style.color = "green";
+
+  cart = [];
+  updateCart();
+
+  document.getElementById("checkoutSummary").innerHTML = "<p>Thanks! Your order was recorded.</p>";
+  document.getElementById("checkoutTotal").textContent = "0.00";
 }
 
-
-// ==============================
-// GET ORDER TOTAL
-// ==============================
-
-function getOrderTotal() {
-
-    // Change this to whatever your
-    // existing cart total variable is.
-
-    const totalElement =
-        document.getElementById("orderTotal");
-
-    return parseFloat(totalElement.textContent) || 0;
+function openStats() {
+  updateStats();
+  document.getElementById("statsModal").style.display = "flex";
 }
 
+function closeStats() {
+  document.getElementById("statsModal").style.display = "none";
+}
 
-// ==============================
-// CLOSE MODAL WHEN CLICKING OUTSIDE
-// ==============================
+function resetStats() {
+  const confirmed = confirm("Are you sure you want to reset all sales?");
 
-window.onclick = function(event) {
+  if (!confirmed) {
+    return;
+  }
 
-    const modal =
-        document.getElementById("venmoModal");
+  saveSales([]);
+  updateStats();
+  alert("Stats have been reset!");
+}
 
-    if (event.target === modal) {
-        closeVenmoPayment();
-    }
-    let cart = [];
+window.addEventListener("click", (event) => {
+  const cartModal = document.getElementById("cartModal");
+  const checkoutModal = document.getElementById("checkoutModal");
+  const statsModal = document.getElementById("statsModal");
 
-    function addToCart(button) {
-        const card = button.closest(".card");
+  if (event.target === cartModal) {
+    closeCart();
+  }
 
-        const name = card.dataset.name;
-        const price = parseFloat(card.dataset.price);
+  if (event.target === checkoutModal) {
+    closeCheckout();
+  }
 
-        const existingItem = cart.find(item => item.name === name);
+  if (event.target === statsModal) {
+    closeStats();
+  }
+});
 
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push({
-                name: name,
-                price: price,
-                quantity: 1
-            });
-        }
-
-        updateCart();
-
-        // Small visual confirmation
-        button.textContent = "✓ Added!";
-
-        setTimeout(() => {
-            button.textContent = "Add to Cart";
-        }, 1000);
-    }
-
-    function updateCart() {
-        console.log("Cart:", cart);
-    }
-};
+updateCart();
+updateStats();

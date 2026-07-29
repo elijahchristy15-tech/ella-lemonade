@@ -1,1252 +1,169 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Ella's Lemonade Stand</title>
-
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
-
 <body>
+  <header>
+    <div class="emoji">&#127819;</div>
+    <h1>Ella's Lemonade Stand</h1>
+    <p>Free gummies with every drink if you want them in there &#127852;</p>
+  </header>
 
-<header>
-  <div class="emoji">🍋</div>
-  <h1>Ella's Lemonade Stand</h1>
-  <p>Free Gummies With Every Drink you want it to be in 🍬</p>
-</header>
+  <main>
+    <section class="menu">
+      <h2>Our Menu</h2>
 
+      <div class="cards">
+        <div class="card" data-name="Classic Lemonade" data-price="1.00">
+          <div class="drink">&#127819;</div>
+          <h3>Classic Lemonade</h3>
+          <p>Sweet, refreshing and perfectly lemony.</p>
+          <div class="price">$1.00</div>
+          <button type="button" class="add-to-cart" onclick="addToCart(this)">
+            Add to Cart
+          </button>
+        </div>
 
-<main>
+        <div class="card" data-name="Pickle" data-price="2.00">
+          <div class="drink">&#129362;</div>
+          <h3>Pickle</h3>
+          <p>It's a pickle.</p>
+          <div class="price">$2.00</div>
+          <button type="button" class="add-to-cart" onclick="addToCart(this)">
+            Add to Cart
+          </button>
+        </div>
 
-  <section class="menu">
+        <div class="card" data-name="Flavored Lemonade" data-price="2.00">
+          <div class="drink">&#127827;</div>
+          <h3>Flavored Lemonade</h3>
+          <p>Choose your favorite flavor.</p>
+          <div class="price">$2.00</div>
+          <button type="button" class="add-to-cart" onclick="addToCart(this)">
+            Add to Cart
+          </button>
+          <button type="button" class="flavor-btn" onclick="toggleFlavors()">
+            View Flavors &#127819;
+          </button>
+          <ul id="flavor-list" class="hidden">
+            <li>&#127827; Strawberry</li>
+            <li>&#10084;&#65039; Raspberry</li>
+            <li>&#127825; Peach</li>
+          </ul>
+        </div>
 
-    <h2>Our Menu</h2>
-
-    <div class="cards">
-
-
-      <!-- CLASSIC LEMONADE -->
-      <div class="card" data-name="Classic Lemonade" data-price="1.00">
-
-        <div class="drink">🍋</div>
-
-        <h3>Classic Lemonade</h3>
-
-        <p>
-          Sweet, refreshing and perfectly lemony.
-        </p>
-
-        <div class="price">$1.00</div>
-
-        <button class="add-to-cart" onclick="addToCart(this)">
-          Add to Cart
-        </button>
-
+        <div class="card" data-name="Water" data-price="1.00">
+          <div class="drink">&#128167;</div>
+          <h3>Water</h3>
+          <p>It's always good to have some water.</p>
+          <div class="price">$1.00</div>
+          <button type="button" class="add-to-cart" onclick="addToCart(this)">
+            Add to Cart
+          </button>
+        </div>
       </div>
+    </section>
+  </main>
 
+  <button type="button" id="cartButton" onclick="openCart()">
+    &#128722; Cart <span id="cartCount">0</span>
+  </button>
 
-      <!-- PICKLE -->
-      <div class="card" data-name="Pickle" data-price="2.00">
-
-        <div class="emoji">🥒</div>
-
-        <h3>Pickle</h3>
-
-        <p>It's a pickle.</p>
-
-        <div class="price">$2.00</div>
-
-        <button class="add-to-cart" onclick="addToCart(this)">
-          Add to Cart
-        </button>
-
+  <div id="cartModal" class="modal">
+    <div class="cart-box">
+      <button type="button" class="close-cart" onclick="closeCart()">
+        &times;
+      </button>
+      <h2>&#128722; Your Cart</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total">
+        Total: $<span id="cartTotal">0.00</span>
       </div>
-
-
-      <!-- FLAVORED LEMONADE -->
-      <div class="card"
-           data-name="Flavored Lemonade"
-           data-price="2.00">
-
-        <h3>🍓 Flavored Lemonade</h3>
-
-        <p>
-          Choose your favorite flavor.
-        </p>
-
-        <div class="price">$2.00</div>
-
-        <button class="add-to-cart" onclick="addToCart(this)">
-          Add to Cart
-        </button>
-
-        <button class="flavor-btn" onclick="toggleFlavors()">
-          View Flavors 🍋
-        </button>
-
-        <ul id="flavor-list" class="hidden">
-
-          <li>🍓 Strawberry</li>
-          <li>❤️ Raspberry</li>
-          <li>🍑 Peach</li>
-
-        </ul>
-
-      </div>
-
-
-      <!-- WATER -->
-      <div class="card" data-name="Water" data-price="1.00">
-
-        <div class="drink">💧</div>
-
-        <h3>Water</h3>
-
-        <p>
-          It's always good to have some water.
-        </p>
-
-        <div class="price">$1.00</div>
-
-        <button class="add-to-cart" onclick="addToCart(this)">
-          Add to Cart
-        </button>
-
-      </div>
-
-
+      <button type="button" class="checkout-button" onclick="openCheckout()">
+        Checkout
+      </button>
     </div>
-
-  </section>
-
-</main>
-
-
-<!-- FLOATING CART BUTTON -->
-
-<button id="cartButton" onclick="openCart()">
-  🛒 Cart <span id="cartCount">0</span>
-</button>
-
-
-<!-- CART MODAL -->
-
-<div id="cartModal" class="modal">
-
-  <div class="cart-box">
-
-    <button class="close-cart" onclick="closeCart()">
-      ×
-    </button>
-
-    <h2>🛒 Your Cart</h2>
-
-    <div id="cartItems"></div>
-
-    <div class="cart-total">
-      Total: $<span id="cartTotal">0.00</span>
-    </div>
-
-    <button
-            class="checkout-button"
-            onclick="openCheckout()"
-    >
-      Checkout
-    </button>
-
   </div>
 
-</div>
-
-
-<!-- CHECKOUT MODAL -->
-
-<div id="checkoutModal" class="modal">
-
-  <div class="cart-box">
-
-    <button class="close-cart" onclick="closeCheckout()">
-      ×
-    </button>
-
-    <h2>💳 Checkout</h2>
-
-    <div id="checkoutSummary"></div>
-
-    <h3>
-      Total:
-      $<span id="checkoutTotal">0.00</span>
-    </h3>
-
-    <hr>
-
-    <h3>Pay with Venmo</h3>
-
-    <p>
-      Send your payment to:
-    </p>
-
-    <div class="venmo-name">
-      @Crystal-Christy
+  <div id="checkoutModal" class="modal">
+    <div class="cart-box">
+      <button type="button" class="close-cart" onclick="closeCheckout()">
+        &times;
+      </button>
+      <h2>&#128179; Checkout</h2>
+      <div id="checkoutSummary"></div>
+      <h3>Total: $<span id="checkoutTotal">0.00</span></h3>
+      <hr>
+      <h3>Pay with Venmo</h3>
+      <p>Send your payment to:</p>
+      <div class="venmo-name">@Crystal-Christy</div>
+      <button type="button" class="venmo-button" onclick="payWithVenmo()">
+        &#128153; Open Venmo
+      </button>
+      <button type="button" class="paid-button" onclick="confirmPayment()">
+        &#9989; I've Paid
+      </button>
+      <p id="paymentStatus"></p>
     </div>
-
-    <button
-            class="venmo-button"
-            onclick="payWithVenmo()"
-    >
-      💙 Open Venmo
-    </button>
-
-    <button
-            class="paid-button"
-            onclick="confirmPayment()"
-    >
-      ✅ I've Paid
-    </button>
-
-    <p id="paymentStatus"></p>
-
   </div>
 
-</div>
+  <button type="button" id="statsButton" onclick="openStats()">
+    &#128202; Stats
+  </button>
 
-<!-- OWNER STATS BUTTON -->
+  <div id="statsModal" class="modal">
+    <div class="cart-box stats-box">
+      <button type="button" class="close-cart" onclick="closeStats()">
+        &times;
+      </button>
+      <h2>&#128202; Lemonade Stand Stats</h2>
 
-<button id="statsButton" onclick="openStats()">
-  📊 Stats
-</button>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span>&#128176;</span>
+          <strong id="statMoney">$0.00</strong>
+          <small>Total Sales</small>
+        </div>
 
+        <div class="stat-card">
+          <span>&#129534;</span>
+          <strong id="statOrders">0</strong>
+          <small>Orders</small>
+        </div>
 
-<!-- OWNER STATS MODAL -->
-
-<div id="statsModal" class="modal">
-
-  <div class="cart-box stats-box">
-
-    <button class="close-cart" onclick="closeStats()">
-      ×
-    </button>
-
-    <h2>📊 Lemonade Stand Stats</h2>
-
-    <div class="stats-grid">
-
-      <div class="stat-card">
-        <span>💰</span>
-        <strong id="statMoney">$0.00</strong>
-        <small>Total Sales</small>
+        <div class="stat-card">
+          <span>&#128722;</span>
+          <strong id="statItems">0</strong>
+          <small>Items Sold</small>
+        </div>
       </div>
 
-      <div class="stat-card">
-        <span>🧾</span>
-        <strong id="statOrders">0</strong>
-        <small>Orders</small>
+      <h3>&#129380; Products Sold</h3>
+
+      <div class="product-stats">
+        <p>&#127819; Classic Lemonade <strong id="statClassic">0</strong></p>
+        <p>&#127827; Strawberry Lemonade <strong id="statStrawberry">0</strong></p>
+        <p>&#10084;&#65039; Raspberry Lemonade <strong id="statRaspberry">0</strong></p>
+        <p>&#127825; Peach Lemonade <strong id="statPeach">0</strong></p>
+        <p>&#129362; Pickles <strong id="statPickle">0</strong></p>
+        <p>&#128167; Water <strong id="statWater">0</strong></p>
       </div>
 
-      <div class="stat-card">
-        <span>🛒</span>
-        <strong id="statItems">0</strong>
-        <small>Items Sold</small>
-      </div>
-
+      <button type="button" class="reset-stats" onclick="resetStats()">
+        &#128465;&#65039; Reset Stats
+      </button>
     </div>
-
-    <h3>🥤 Products Sold</h3>
-
-    <div class="product-stats">
-
-      <p>🍋 Classic Lemonade <strong id="statClassic">0</strong></p>
-
-      <p>🍓 Strawberry Lemonade <strong id="statStrawberry">0</strong></p>
-
-      <p>❤️ Raspberry Lemonade <strong id="statRaspberry">0</strong></p>
-
-      <p>🍑 Peach Lemonade <strong id="statPeach">0</strong></p>
-
-      <p>🥒 Pickles <strong id="statPickle">0</strong></p>
-
-      <p>💧 Water <strong id="statWater">0</strong></p>
-
-    </div>
-
-    <button class="reset-stats" onclick="resetStats()">
-      🗑️ Reset Stats
-    </button>
-
   </div>
 
-</div>
-
-<footer>
-  Made by Eli Lemonade stand by Ella 605 sandycrest dr 08/01/2026
-</footer>
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-  // =========================================
-  // SUPABASE
-  // =========================================
-
-  const SUPABASE_URL =
-          "https://itufkjsfrspwfbxxexmq.supabase.co";
-
-  const SUPABASE_ANON_KEY =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dWZranNmcnNwd2ZieHhleG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNTY3MTcsImV4cCI6MjEwMDkzMjcxN30.VQmL4xG7AHPN_PX3pwf-QQY6Sf_bTy5IslAoXzje2fs";
-
-
-  const supabase =
-          window.supabase.createClient(
-                  SUPABASE_URL,
-                  SUPABASE_ANON_KEY
-          );
-
-
-  // =========================================
-  // FLAVORS
-  // =========================================
-
-  function toggleFlavors() {
-
-    const list =
-            document.getElementById("flavor-list");
-
-    list.classList.toggle("hidden");
-
-  }
-
-
-  // =========================================
-  // CART
-  // =========================================
-
-  let cart = [];
-
-
-  // =========================================
-  // ADD TO CART
-  // =========================================
-
-  function addToCart(button) {
-
-    const card =
-            button.closest(".card");
-
-
-    let name =
-            card.dataset.name;
-
-
-    const price =
-            parseFloat(card.dataset.price);
-
-
-    // -----------------------------------------
-    // FLAVORED LEMONADE
-    // -----------------------------------------
-
-    if (name === "Flavored Lemonade") {
-
-      const flavor =
-              prompt(
-                      "Choose a flavor:\n\n" +
-                      "1 - Strawberry 🍓\n" +
-                      "2 - Raspberry ❤️\n" +
-                      "3 - Peach 🍑"
-              );
-
-
-      if (!flavor) {
-
-        return;
-
-      }
-
-
-      if (flavor === "1") {
-
-        name =
-                "Strawberry Lemonade";
-
-      }
-
-      else if (flavor === "2") {
-
-        name =
-                "Raspberry Lemonade";
-
-      }
-
-      else if (flavor === "3") {
-
-        name =
-                "Peach Lemonade";
-
-      }
-
-      else {
-
-        alert(
-                "Please enter 1, 2, or 3."
-        );
-
-        return;
-
-      }
-
-    }
-
-
-    // -----------------------------------------
-    // FIND EXISTING ITEM
-    // -----------------------------------------
-
-    const existingItem =
-            cart.find(
-                    item => item.name === name
-            );
-
-
-    if (existingItem) {
-
-      existingItem.quantity++;
-
-    }
-
-    else {
-
-      cart.push({
-
-        name: name,
-
-        price: price,
-
-        quantity: 1
-
-      });
-
-    }
-
-
-    updateCart();
-
-
-    button.textContent =
-            "✓ Added!";
-
-
-    setTimeout(() => {
-
-      button.textContent =
-              "Add to Cart";
-
-    }, 1000);
-
-  }
-
-
-  // =========================================
-  // UPDATE CART
-  // =========================================
-
-  function updateCart() {
-
-    const cartItems =
-            document.getElementById(
-                    "cartItems"
-            );
-
-
-    const cartCount =
-            document.getElementById(
-                    "cartCount"
-            );
-
-
-    const cartTotal =
-            document.getElementById(
-                    "cartTotal"
-            );
-
-
-    cartItems.innerHTML = "";
-
-
-    let total = 0;
-
-    let itemCount = 0;
-
-
-    cart.forEach(
-            (item, index) => {
-
-              const itemTotal =
-                      item.price *
-                      item.quantity;
-
-
-              total += itemTotal;
-
-              itemCount +=
-                      item.quantity;
-
-
-              const itemElement =
-                      document.createElement(
-                              "div"
-                      );
-
-
-              itemElement.className =
-                      "cart-item";
-
-
-              itemElement.innerHTML = `
-
-          <div class="cart-item-info">
-
-            <div class="cart-item-name">
-              ${item.name}
-            </div>
-
-            <div class="cart-item-price">
-              $${item.price.toFixed(2)} each
-            </div>
-
-          </div>
-
-
-          <div class="quantity-controls">
-
-            <button
-              onclick="changeQuantity(${index}, -1)"
-            >
-              −
-            </button>
-
-
-            <span class="quantity">
-              ${item.quantity}
-            </span>
-
-
-            <button
-              onclick="changeQuantity(${index}, 1)"
-            >
-              +
-            </button>
-
-          </div>
-
-        `;
-
-
-              cartItems.appendChild(
-                      itemElement
-              );
-
-            }
-    );
-
-
-    cartCount.textContent =
-            itemCount;
-
-
-    cartTotal.textContent =
-            total.toFixed(2);
-
-  }
-
-
-  // =========================================
-  // CHANGE QUANTITY
-  // =========================================
-
-  function changeQuantity(
-          index,
-          amount
-  ) {
-
-    cart[index].quantity +=
-            amount;
-
-
-    if (
-            cart[index].quantity <= 0
-    ) {
-
-      cart.splice(
-              index,
-              1
-      );
-
-    }
-
-
-    updateCart();
-
-  }
-
-
-  // =========================================
-  // OPEN CART
-  // =========================================
-
-  function openCart() {
-
-    updateCart();
-
-
-    document.getElementById(
-            "cartModal"
-    ).style.display = "flex";
-
-  }
-
-
-  // =========================================
-  // CLOSE CART
-  // =========================================
-
-  function closeCart() {
-
-    document.getElementById(
-            "cartModal"
-    ).style.display = "none";
-
-  }
-
-
-  // =========================================
-  // OPEN CHECKOUT
-  // =========================================
-
-  function openCheckout() {
-
-    if (
-            cart.length === 0
-    ) {
-
-      alert(
-              "Your cart is empty!"
-      );
-
-      return;
-
-    }
-
-
-    let summary = "";
-
-    let total = 0;
-
-
-    cart.forEach(
-            item => {
-
-              const itemTotal =
-                      item.price *
-                      item.quantity;
-
-
-              total += itemTotal;
-
-
-              summary += `
-
-          <p>
-
-            <strong>
-              ${item.name}
-            </strong>
-
-            × ${item.quantity}
-
-            — $${itemTotal.toFixed(2)}
-
-          </p>
-
-        `;
-
-            }
-    );
-
-
-    document.getElementById(
-            "checkoutSummary"
-    ).innerHTML =
-            summary;
-
-
-    document.getElementById(
-            "checkoutTotal"
-    ).textContent =
-            total.toFixed(2);
-
-
-    closeCart();
-
-
-    document.getElementById(
-            "checkoutModal"
-    ).style.display =
-            "flex";
-
-  }
-
-
-  // =========================================
-  // CLOSE CHECKOUT
-  // =========================================
-
-  function closeCheckout() {
-
-    document.getElementById(
-            "checkoutModal"
-    ).style.display =
-            "none";
-
-  }
-
-
-  // =========================================
-  // VENMO
-  // =========================================
-
-  function payWithVenmo() {
-
-    const venmoUsername =
-            "Crystal-Christy";
-
-
-    const venmoURL =
-            "https://venmo.com/u/" +
-            venmoUsername;
-
-
-    window.open(
-            venmoURL,
-            "_blank"
-    );
-
-  }
-
-
-  // =========================================
-  // RECORD SALE IN SUPABASE
-  // =========================================
-
-  async function recordSale() {
-
-    if (
-            cart.length === 0
-    ) {
-
-      return false;
-
-    }
-
-
-    // Create ONE ID for the entire order
-
-    const orderId =
-            crypto.randomUUID();
-
-
-    // Convert cart into Supabase rows
-
-    const sales =
-            cart.map(
-                    item => ({
-
-                      order_id:
-                      orderId,
-
-                      product:
-                      item.name,
-
-                      quantity:
-                      item.quantity,
-
-                      amount:
-                              item.price *
-                              item.quantity
-
-                    })
-            );
-
-
-    console.log(
-            "Sending sale to Supabase:",
-            sales
-    );
-
-
-    const {
-      error
-    } = await supabase
-            .from("sales")
-            .insert(sales);
-
-
-    if (error) {
-
-      console.error(
-              "Supabase sale error:",
-              error
-      );
-
-
-      alert(
-              "There was a problem recording your order.\n\n" +
-              "Please try again."
-      );
-
-
-      return false;
-
-    }
-
-
-    console.log(
-            "Sale successfully recorded!"
-    );
-
-
-    return true;
-
-  }
-
-
-  // =========================================
-  // PAYMENT CONFIRMATION
-  // =========================================
-
-  async function confirmPayment() {
-
-    if (
-            cart.length === 0
-    ) {
-
-      alert(
-              "Your cart is empty!"
-      );
-
-      return;
-
-    }
-
-
-    const success =
-            await recordSale();
-
-
-    // Don't clear cart if Supabase failed
-
-    if (!success) {
-
-      return;
-
-    }
-
-
-    document.getElementById(
-            "paymentStatus"
-    ).textContent =
-            "✅ Payment marked as sent!";
-
-
-    document.getElementById(
-            "paymentStatus"
-    ).style.color =
-            "green";
-
-
-    // Clear cart
-
-    cart = [];
-
-
-    updateCart();
-
-
-    // Refresh stats
-
-    await updateStats();
-
-  }
-
-
-  // =========================================
-  // OPEN STATS
-  // =========================================
-
-  async function openStats() {
-
-    await updateStats();
-
-
-    document.getElementById(
-            "statsModal"
-    ).style.display =
-            "flex";
-
-  }
-
-
-  // =========================================
-  // CLOSE STATS
-  // =========================================
-
-  function closeStats() {
-
-    document.getElementById(
-            "statsModal"
-    ).style.display =
-            "none";
-
-  }
-
-
-  // =========================================
-  // UPDATE STATS FROM SUPABASE
-  // =========================================
-
-  async function updateStats() {
-
-    const {
-      data,
-      error
-    } = await supabase
-            .from("sales")
-            .select("*");
-
-
-    if (error) {
-
-      console.error(
-              "Could not load stats:",
-              error
-      );
-
-
-      return;
-
-    }
-
-
-    // -----------------------------------------
-    // TOTALS
-    // -----------------------------------------
-
-    let money = 0;
-
-    let items = 0;
-
-
-    let classic = 0;
-
-    let strawberry = 0;
-
-    let raspberry = 0;
-
-    let peach = 0;
-
-    let pickle = 0;
-
-    let water = 0;
-
-
-    // -----------------------------------------
-    // COUNT UNIQUE ORDERS
-    // -----------------------------------------
-
-    const orderIds =
-            new Set();
-
-
-    // -----------------------------------------
-    // PROCESS SALES
-    // -----------------------------------------
-
-    data.forEach(
-            sale => {
-
-              money +=
-                      Number(
-                              sale.amount
-                      );
-
-
-              items +=
-                      sale.quantity;
-
-
-              orderIds.add(
-                      sale.order_id
-              );
-
-
-              if (
-                      sale.product ===
-                      "Classic Lemonade"
-              ) {
-
-                classic +=
-                        sale.quantity;
-
-              }
-
-
-              else if (
-                      sale.product ===
-                      "Strawberry Lemonade"
-              ) {
-
-                strawberry +=
-                        sale.quantity;
-
-              }
-
-
-              else if (
-                      sale.product ===
-                      "Raspberry Lemonade"
-              ) {
-
-                raspberry +=
-                        sale.quantity;
-
-              }
-
-
-              else if (
-                      sale.product ===
-                      "Peach Lemonade"
-              ) {
-
-                peach +=
-                        sale.quantity;
-
-              }
-
-
-              else if (
-                      sale.product ===
-                      "Pickle"
-              ) {
-
-                pickle +=
-                        sale.quantity;
-
-              }
-
-
-              else if (
-                      sale.product ===
-                      "Water"
-              ) {
-
-                water +=
-                        sale.quantity;
-
-              }
-
-            }
-    );
-
-
-    // -----------------------------------------
-    // UPDATE HTML
-    // -----------------------------------------
-
-    document.getElementById(
-            "statMoney"
-    ).textContent =
-            "$" +
-            money.toFixed(2);
-
-
-    document.getElementById(
-            "statOrders"
-    ).textContent =
-            orderIds.size;
-
-
-    document.getElementById(
-            "statItems"
-    ).textContent =
-            items;
-
-
-    document.getElementById(
-            "statClassic"
-    ).textContent =
-            classic;
-
-
-    document.getElementById(
-            "statStrawberry"
-    ).textContent =
-            strawberry;
-
-
-    document.getElementById(
-            "statRaspberry"
-    ).textContent =
-            raspberry;
-
-
-    document.getElementById(
-            "statPeach"
-    ).textContent =
-            peach;
-
-
-    document.getElementById(
-            "statPickle"
-    ).textContent =
-            pickle;
-
-
-    document.getElementById(
-            "statWater"
-    ).textContent =
-            water;
-
-  }
-
-
-  // =========================================
-  // RESET STATS
-  // =========================================
-
-  async function resetStats() {
-
-    const confirmed =
-            confirm(
-                    "Are you sure you want to reset all sales?"
-            );
-
-
-    if (!confirmed) {
-
-      return;
-
-    }
-
-
-    const {
-      error
-    } = await supabase
-            .from("sales")
-            .delete()
-            .neq(
-                    "id",
-                    0
-            );
-
-
-    if (error) {
-
-      console.error(
-              "Reset failed:",
-              error
-      );
-
-
-      alert(
-              "Could not reset the stats."
-      );
-
-
-      return;
-
-    }
-
-
-    await updateStats();
-
-
-    alert(
-            "Stats have been reset!"
-    );
-
-  }
-
-
-  // =========================================
-  // CLICK OUTSIDE MODALS
-  // =========================================
-
-  window.addEventListener(
-          "click",
-          function(event) {
-
-            const cartModal =
-                    document.getElementById(
-                            "cartModal"
-                    );
-
-
-            const checkoutModal =
-                    document.getElementById(
-                            "checkoutModal"
-                    );
-
-
-            const statsModal =
-                    document.getElementById(
-                            "statsModal"
-                    );
-
-
-            if (
-                    event.target ===
-                    cartModal
-            ) {
-
-              closeCart();
-
-            }
-
-
-            if (
-                    event.target ===
-                    checkoutModal
-            ) {
-
-              closeCheckout();
-
-            }
-
-
-            if (
-                    event.target ===
-                    statsModal
-            ) {
-
-              closeStats();
-
-            }
-
-          }
-  );
-
-
-  // =========================================
-  // INITIALIZE
-  // =========================================
-
-  updateCart();
-
-  updateStats();
-
-</script>
+  <footer>
+    Made by Eli. Lemonade stand by Ella. 605 Sandycrest Dr. 08/01/2026
+  </footer>
+
+  <script src="venmo.js"></script>
+</body>
+</html>
