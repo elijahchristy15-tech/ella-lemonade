@@ -4,6 +4,190 @@
 
 const venmoUsername = "Crystal-Christy";
 
+// =========================
+// STATS
+// =========================
+
+let stats = JSON.parse(
+    localStorage.getItem("lemonadeStats")
+) || {
+    money: 0,
+    orders: 0,
+    items: 0,
+
+    classic: 0,
+    strawberry: 0,
+    raspberry: 0,
+    peach: 0,
+    pickle: 0,
+    water: 0
+};
+
+
+function saveStats() {
+
+    localStorage.setItem(
+        "lemonadeStats",
+        JSON.stringify(stats)
+    );
+
+}
+
+// =========================
+// OPEN STATS
+// =========================
+
+function openStats() {
+
+    updateStats();
+
+    document.getElementById("statsModal")
+        .style.display = "flex";
+
+}
+
+
+// =========================
+// CLOSE STATS
+// =========================
+
+function closeStats() {
+
+    document.getElementById("statsModal")
+        .style.display = "none";
+
+}
+
+
+// =========================
+// UPDATE STATS DISPLAY
+// =========================
+
+function updateStats() {
+
+    document.getElementById("statMoney")
+        .textContent =
+        "$" + stats.money.toFixed(2);
+
+    document.getElementById("statOrders")
+        .textContent =
+        stats.orders;
+
+    document.getElementById("statItems")
+        .textContent =
+        stats.items;
+
+
+    document.getElementById("statClassic")
+        .textContent =
+        stats.classic;
+
+    document.getElementById("statStrawberry")
+        .textContent =
+        stats.strawberry;
+
+    document.getElementById("statRaspberry")
+        .textContent =
+        stats.raspberry;
+
+    document.getElementById("statPeach")
+        .textContent =
+        stats.peach;
+
+    document.getElementById("statPickle")
+        .textContent =
+        stats.pickle;
+
+    document.getElementById("statWater")
+        .textContent =
+        stats.water;
+
+}
+
+
+// =========================
+// RECORD SALE
+// =========================
+
+function recordSale() {
+
+    if (cart.length === 0) {
+        return;
+    }
+
+
+    let total = 0;
+    let items = 0;
+
+
+    cart.forEach(item => {
+
+        total +=
+            item.price * item.quantity;
+
+        items +=
+            item.quantity;
+
+
+        // Product tracking
+
+        if (item.name === "Classic Lemonade") {
+
+            stats.classic += item.quantity;
+
+        }
+
+        else if (
+            item.name === "Strawberry Lemonade"
+        ) {
+
+            stats.strawberry += item.quantity;
+
+        }
+
+        else if (
+            item.name === "Raspberry Lemonade"
+        ) {
+
+            stats.raspberry += item.quantity;
+
+        }
+
+        else if (
+            item.name === "Peach Lemonade"
+        ) {
+
+            stats.peach += item.quantity;
+
+        }
+
+        else if (item.name === "Pickle") {
+
+            stats.pickle += item.quantity;
+
+        }
+
+        else if (item.name === "Water") {
+
+            stats.water += item.quantity;
+
+        }
+
+    });
+
+
+    stats.money += total;
+
+    stats.items += items;
+
+    stats.orders++;
+
+
+    saveStats();
+
+    updateStats();
+
+}
 
 // ==============================
 // OPEN VENMO PAYMENT

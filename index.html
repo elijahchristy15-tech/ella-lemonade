@@ -214,17 +214,103 @@
 
 </div>
 
+<!-- OWNER STATS BUTTON -->
+
+<button id="statsButton" onclick="openStats()">
+  📊 Stats
+</button>
+
+
+<!-- OWNER STATS MODAL -->
+
+<div id="statsModal" class="modal">
+
+  <div class="cart-box stats-box">
+
+    <button class="close-cart" onclick="closeStats()">
+      ×
+    </button>
+
+    <h2>📊 Lemonade Stand Stats</h2>
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <span>💰</span>
+        <strong id="statMoney">$0.00</strong>
+        <small>Total Sales</small>
+      </div>
+
+      <div class="stat-card">
+        <span>🧾</span>
+        <strong id="statOrders">0</strong>
+        <small>Orders</small>
+      </div>
+
+      <div class="stat-card">
+        <span>🛒</span>
+        <strong id="statItems">0</strong>
+        <small>Items Sold</small>
+      </div>
+
+    </div>
+
+    <h3>🥤 Products Sold</h3>
+
+    <div class="product-stats">
+
+      <p>🍋 Classic Lemonade <strong id="statClassic">0</strong></p>
+
+      <p>🍓 Strawberry Lemonade <strong id="statStrawberry">0</strong></p>
+
+      <p>❤️ Raspberry Lemonade <strong id="statRaspberry">0</strong></p>
+
+      <p>🍑 Peach Lemonade <strong id="statPeach">0</strong></p>
+
+      <p>🥒 Pickles <strong id="statPickle">0</strong></p>
+
+      <p>💧 Water <strong id="statWater">0</strong></p>
+
+    </div>
+
+    <button class="reset-stats" onclick="resetStats()">
+      🗑️ Reset Stats
+    </button>
+
+  </div>
+
+</div>
 
 <footer>
-  Made with 🍋 and sunshine
+  Made by Eli Lemonade stand by Ella 605 sandycrest dr 08/01/2026
 </footer>
 
+```html
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-  // =========================
+  // =========================================
+  // SUPABASE
+  // =========================================
+
+  const SUPABASE_URL =
+          "https://itufkjsfrspwfbxxexmq.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0dWZranNmcnNwd2ZieHhleG1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNTY3MTcsImV4cCI6MjEwMDkzMjcxN30.VQmL4xG7AHPN_PX3pwf-QQY6Sf_bTy5IslAoXzje2fs";
+
+
+  const supabase =
+          window.supabase.createClient(
+                  SUPABASE_URL,
+                  SUPABASE_ANON_KEY
+          );
+
+
+  // =========================================
   // FLAVORS
-  // =========================
+  // =========================================
 
   function toggleFlavors() {
 
@@ -236,39 +322,113 @@
   }
 
 
-  // =========================
+  // =========================================
   // CART
-  // =========================
+  // =========================================
 
   let cart = [];
 
+
+  // =========================================
+  // ADD TO CART
+  // =========================================
 
   function addToCart(button) {
 
     const card =
             button.closest(".card");
 
-    const name =
+
+    let name =
             card.dataset.name;
+
 
     const price =
             parseFloat(card.dataset.price);
 
 
+    // -----------------------------------------
+    // FLAVORED LEMONADE
+    // -----------------------------------------
+
+    if (name === "Flavored Lemonade") {
+
+      const flavor =
+              prompt(
+                      "Choose a flavor:\n\n" +
+                      "1 - Strawberry 🍓\n" +
+                      "2 - Raspberry ❤️\n" +
+                      "3 - Peach 🍑"
+              );
+
+
+      if (!flavor) {
+
+        return;
+
+      }
+
+
+      if (flavor === "1") {
+
+        name =
+                "Strawberry Lemonade";
+
+      }
+
+      else if (flavor === "2") {
+
+        name =
+                "Raspberry Lemonade";
+
+      }
+
+      else if (flavor === "3") {
+
+        name =
+                "Peach Lemonade";
+
+      }
+
+      else {
+
+        alert(
+                "Please enter 1, 2, or 3."
+        );
+
+        return;
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // FIND EXISTING ITEM
+    // -----------------------------------------
+
     const existingItem =
-            cart.find(item => item.name === name);
+            cart.find(
+                    item => item.name === name
+            );
 
 
     if (existingItem) {
 
       existingItem.quantity++;
 
-    } else {
+    }
+
+    else {
 
       cart.push({
+
         name: name,
+
         price: price,
+
         quantity: 1
+
       });
 
     }
@@ -277,61 +437,77 @@
     updateCart();
 
 
-    button.textContent = "✓ Added!";
+    button.textContent =
+            "✓ Added!";
 
 
     setTimeout(() => {
 
-      button.textContent = "Add to Cart";
+      button.textContent =
+              "Add to Cart";
 
     }, 1000);
 
   }
 
 
-  // =========================
+  // =========================================
   // UPDATE CART
-  // =========================
+  // =========================================
 
   function updateCart() {
 
     const cartItems =
-            document.getElementById("cartItems");
+            document.getElementById(
+                    "cartItems"
+            );
+
 
     const cartCount =
-            document.getElementById("cartCount");
+            document.getElementById(
+                    "cartCount"
+            );
+
 
     const cartTotal =
-            document.getElementById("cartTotal");
+            document.getElementById(
+                    "cartTotal"
+            );
 
 
     cartItems.innerHTML = "";
 
 
     let total = 0;
+
     let itemCount = 0;
 
 
-    cart.forEach((item, index) => {
+    cart.forEach(
+            (item, index) => {
 
-      const itemTotal =
-              item.price * item.quantity;
-
-
-      total += itemTotal;
-
-      itemCount += item.quantity;
+              const itemTotal =
+                      item.price *
+                      item.quantity;
 
 
-      const itemElement =
-              document.createElement("div");
+              total += itemTotal;
+
+              itemCount +=
+                      item.quantity;
 
 
-      itemElement.className =
-              "cart-item";
+              const itemElement =
+                      document.createElement(
+                              "div"
+                      );
 
 
-      itemElement.innerHTML = `
+              itemElement.className =
+                      "cart-item";
+
+
+              itemElement.innerHTML = `
 
           <div class="cart-item-info">
 
@@ -354,9 +530,11 @@
               −
             </button>
 
+
             <span class="quantity">
               ${item.quantity}
             </span>
+
 
             <button
               onclick="changeQuantity(${index}, 1)"
@@ -369,9 +547,12 @@
         `;
 
 
-      cartItems.appendChild(itemElement);
+              cartItems.appendChild(
+                      itemElement
+              );
 
-    });
+            }
+    );
 
 
     cartCount.textContent =
@@ -384,18 +565,27 @@
   }
 
 
-  // =========================
-  // QUANTITY
-  // =========================
+  // =========================================
+  // CHANGE QUANTITY
+  // =========================================
 
-  function changeQuantity(index, amount) {
+  function changeQuantity(
+          index,
+          amount
+  ) {
 
-    cart[index].quantity += amount;
+    cart[index].quantity +=
+            amount;
 
 
-    if (cart[index].quantity <= 0) {
+    if (
+            cart[index].quantity <= 0
+    ) {
 
-      cart.splice(index, 1);
+      cart.splice(
+              index,
+              1
+      );
 
     }
 
@@ -405,41 +595,48 @@
   }
 
 
-  // =========================
+  // =========================================
   // OPEN CART
-  // =========================
+  // =========================================
 
   function openCart() {
 
     updateCart();
 
-    document.getElementById("cartModal")
-            .style.display = "flex";
+
+    document.getElementById(
+            "cartModal"
+    ).style.display = "flex";
 
   }
 
 
-  // =========================
+  // =========================================
   // CLOSE CART
-  // =========================
+  // =========================================
 
   function closeCart() {
 
-    document.getElementById("cartModal")
-            .style.display = "none";
+    document.getElementById(
+            "cartModal"
+    ).style.display = "none";
 
   }
 
 
-  // =========================
-  // CHECKOUT
-  // =========================
+  // =========================================
+  // OPEN CHECKOUT
+  // =========================================
 
   function openCheckout() {
 
-    if (cart.length === 0) {
+    if (
+            cart.length === 0
+    ) {
 
-      alert("Your cart is empty!");
+      alert(
+              "Your cart is empty!"
+      );
 
       return;
 
@@ -451,62 +648,77 @@
     let total = 0;
 
 
-    cart.forEach(item => {
+    cart.forEach(
+            item => {
 
-      const itemTotal =
-              item.price * item.quantity;
+              const itemTotal =
+                      item.price *
+                      item.quantity;
 
 
-      total += itemTotal;
+              total += itemTotal;
 
 
-      summary += `
+              summary += `
 
           <p>
-            <strong>${item.name}</strong>
+
+            <strong>
+              ${item.name}
+            </strong>
 
             × ${item.quantity}
 
             — $${itemTotal.toFixed(2)}
+
           </p>
 
         `;
 
-    });
+            }
+    );
 
 
-    document.getElementById("checkoutSummary")
-            .innerHTML = summary;
+    document.getElementById(
+            "checkoutSummary"
+    ).innerHTML =
+            summary;
 
 
-    document.getElementById("checkoutTotal")
-            .textContent = total.toFixed(2);
+    document.getElementById(
+            "checkoutTotal"
+    ).textContent =
+            total.toFixed(2);
 
 
     closeCart();
 
 
-    document.getElementById("checkoutModal")
-            .style.display = "flex";
+    document.getElementById(
+            "checkoutModal"
+    ).style.display =
+            "flex";
 
   }
 
 
-  // =========================
+  // =========================================
   // CLOSE CHECKOUT
-  // =========================
+  // =========================================
 
   function closeCheckout() {
 
-    document.getElementById("checkoutModal")
-            .style.display = "none";
+    document.getElementById(
+            "checkoutModal"
+    ).style.display =
+            "none";
 
   }
 
 
-  // =========================
+  // =========================================
   // VENMO
-  // =========================
+  // =========================================
 
   function payWithVenmo() {
 
@@ -527,61 +739,514 @@
   }
 
 
-  // =========================
-  // PAYMENT CONFIRMATION
-  // =========================
+  // =========================================
+  // RECORD SALE IN SUPABASE
+  // =========================================
 
-  function confirmPayment() {
+  async function recordSale() {
 
-    document.getElementById("paymentStatus")
-            .textContent =
-            "✅ Payment marked as sent!";
+    if (
+            cart.length === 0
+    ) {
+
+      return false;
+
+    }
 
 
-    document.getElementById("paymentStatus")
-            .style.color = "green";
+    // Create ONE ID for the entire order
+
+    const orderId =
+            crypto.randomUUID();
+
+
+    // Convert cart into Supabase rows
+
+    const sales =
+            cart.map(
+                    item => ({
+
+                      order_id:
+                      orderId,
+
+                      product:
+                      item.name,
+
+                      quantity:
+                      item.quantity,
+
+                      amount:
+                              item.price *
+                              item.quantity
+
+                    })
+            );
 
 
     console.log(
-            "Customer says they paid:",
-            cart
+            "Sending sale to Supabase:",
+            sales
+    );
+
+
+    const {
+      error
+    } = await supabase
+            .from("sales")
+            .insert(sales);
+
+
+    if (error) {
+
+      console.error(
+              "Supabase sale error:",
+              error
+      );
+
+
+      alert(
+              "There was a problem recording your order.\n\n" +
+              "Please try again."
+      );
+
+
+      return false;
+
+    }
+
+
+    console.log(
+            "Sale successfully recorded!"
+    );
+
+
+    return true;
+
+  }
+
+
+  // =========================================
+  // PAYMENT CONFIRMATION
+  // =========================================
+
+  async function confirmPayment() {
+
+    if (
+            cart.length === 0
+    ) {
+
+      alert(
+              "Your cart is empty!"
+      );
+
+      return;
+
+    }
+
+
+    const success =
+            await recordSale();
+
+
+    // Don't clear cart if Supabase failed
+
+    if (!success) {
+
+      return;
+
+    }
+
+
+    document.getElementById(
+            "paymentStatus"
+    ).textContent =
+            "✅ Payment marked as sent!";
+
+
+    document.getElementById(
+            "paymentStatus"
+    ).style.color =
+            "green";
+
+
+    // Clear cart
+
+    cart = [];
+
+
+    updateCart();
+
+
+    // Refresh stats
+
+    await updateStats();
+
+  }
+
+
+  // =========================================
+  // OPEN STATS
+  // =========================================
+
+  async function openStats() {
+
+    await updateStats();
+
+
+    document.getElementById(
+            "statsModal"
+    ).style.display =
+            "flex";
+
+  }
+
+
+  // =========================================
+  // CLOSE STATS
+  // =========================================
+
+  function closeStats() {
+
+    document.getElementById(
+            "statsModal"
+    ).style.display =
+            "none";
+
+  }
+
+
+  // =========================================
+  // UPDATE STATS FROM SUPABASE
+  // =========================================
+
+  async function updateStats() {
+
+    const {
+      data,
+      error
+    } = await supabase
+            .from("sales")
+            .select("*");
+
+
+    if (error) {
+
+      console.error(
+              "Could not load stats:",
+              error
+      );
+
+
+      return;
+
+    }
+
+
+    // -----------------------------------------
+    // TOTALS
+    // -----------------------------------------
+
+    let money = 0;
+
+    let items = 0;
+
+
+    let classic = 0;
+
+    let strawberry = 0;
+
+    let raspberry = 0;
+
+    let peach = 0;
+
+    let pickle = 0;
+
+    let water = 0;
+
+
+    // -----------------------------------------
+    // COUNT UNIQUE ORDERS
+    // -----------------------------------------
+
+    const orderIds =
+            new Set();
+
+
+    // -----------------------------------------
+    // PROCESS SALES
+    // -----------------------------------------
+
+    data.forEach(
+            sale => {
+
+              money +=
+                      Number(
+                              sale.amount
+                      );
+
+
+              items +=
+                      sale.quantity;
+
+
+              orderIds.add(
+                      sale.order_id
+              );
+
+
+              if (
+                      sale.product ===
+                      "Classic Lemonade"
+              ) {
+
+                classic +=
+                        sale.quantity;
+
+              }
+
+
+              else if (
+                      sale.product ===
+                      "Strawberry Lemonade"
+              ) {
+
+                strawberry +=
+                        sale.quantity;
+
+              }
+
+
+              else if (
+                      sale.product ===
+                      "Raspberry Lemonade"
+              ) {
+
+                raspberry +=
+                        sale.quantity;
+
+              }
+
+
+              else if (
+                      sale.product ===
+                      "Peach Lemonade"
+              ) {
+
+                peach +=
+                        sale.quantity;
+
+              }
+
+
+              else if (
+                      sale.product ===
+                      "Pickle"
+              ) {
+
+                pickle +=
+                        sale.quantity;
+
+              }
+
+
+              else if (
+                      sale.product ===
+                      "Water"
+              ) {
+
+                water +=
+                        sale.quantity;
+
+              }
+
+            }
+    );
+
+
+    // -----------------------------------------
+    // UPDATE HTML
+    // -----------------------------------------
+
+    document.getElementById(
+            "statMoney"
+    ).textContent =
+            "$" +
+            money.toFixed(2);
+
+
+    document.getElementById(
+            "statOrders"
+    ).textContent =
+            orderIds.size;
+
+
+    document.getElementById(
+            "statItems"
+    ).textContent =
+            items;
+
+
+    document.getElementById(
+            "statClassic"
+    ).textContent =
+            classic;
+
+
+    document.getElementById(
+            "statStrawberry"
+    ).textContent =
+            strawberry;
+
+
+    document.getElementById(
+            "statRaspberry"
+    ).textContent =
+            raspberry;
+
+
+    document.getElementById(
+            "statPeach"
+    ).textContent =
+            peach;
+
+
+    document.getElementById(
+            "statPickle"
+    ).textContent =
+            pickle;
+
+
+    document.getElementById(
+            "statWater"
+    ).textContent =
+            water;
+
+  }
+
+
+  // =========================================
+  // RESET STATS
+  // =========================================
+
+  async function resetStats() {
+
+    const confirmed =
+            confirm(
+                    "Are you sure you want to reset all sales?"
+            );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    const {
+      error
+    } = await supabase
+            .from("sales")
+            .delete()
+            .neq(
+                    "id",
+                    0
+            );
+
+
+    if (error) {
+
+      console.error(
+              "Reset failed:",
+              error
+      );
+
+
+      alert(
+              "Could not reset the stats."
+      );
+
+
+      return;
+
+    }
+
+
+    await updateStats();
+
+
+    alert(
+            "Stats have been reset!"
     );
 
   }
 
 
-  // =========================
+  // =========================================
   // CLICK OUTSIDE MODALS
-  // =========================
+  // =========================================
 
   window.addEventListener(
           "click",
           function(event) {
 
             const cartModal =
-                    document.getElementById("cartModal");
+                    document.getElementById(
+                            "cartModal"
+                    );
+
 
             const checkoutModal =
-                    document.getElementById("checkoutModal");
+                    document.getElementById(
+                            "checkoutModal"
+                    );
 
 
-            if (event.target === cartModal) {
+            const statsModal =
+                    document.getElementById(
+                            "statsModal"
+                    );
+
+
+            if (
+                    event.target ===
+                    cartModal
+            ) {
 
               closeCart();
 
             }
 
 
-            if (event.target === checkoutModal) {
+            if (
+                    event.target ===
+                    checkoutModal
+            ) {
 
               closeCheckout();
+
+            }
+
+
+            if (
+                    event.target ===
+                    statsModal
+            ) {
+
+              closeStats();
 
             }
 
           }
   );
 
-</script>
 
-</body>
-</html>
+  // =========================================
+  // INITIALIZE
+  // =========================================
+
+  updateCart();
+
+  updateStats();
+
+</script>
