@@ -15,7 +15,7 @@ body {
     font-family: Arial, sans-serif;
     max-width: 700px;
     margin: 0 auto;
-    padding: 40px 40px 120px;
+    padding: 40px 40px 140px;
 
     background:
             radial-gradient(
@@ -258,6 +258,8 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content,
@@ -265,22 +267,32 @@ footer {
     background: white;
     width: 90%;
     max-width: 460px;
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
     padding: 25px;
     border-radius: 15px;
     text-align: center;
     color: #222;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .close,
 .close-cart {
-    float: right;
+    display: block;
+    position: sticky;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 12px auto;
+    border-radius: 999px;
     font-size: 28px;
     cursor: pointer;
     padding: 0;
-    margin: 0 0 12px;
     background: transparent;
     color: #222;
+    z-index: 1;
 }
 
 .small-text {
@@ -331,6 +343,7 @@ button {
     position: fixed;
     right: 20px;
     bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
     padding: 12px 22px;
     border: none;
     border-radius: 10px;
@@ -351,6 +364,7 @@ button {
     position: fixed;
     left: 20px;
     bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
 
     padding: 12px 18px;
 
@@ -539,12 +553,36 @@ button {
 }
 
 @media (max-width: 600px) {
+    body {
+        padding: 20px 20px 104px;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .modal {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .modal-content,
+    .cart-box {
+        width: 100%;
+        max-width: none;
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
+        padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+    }
+
+    .product-stats p {
+        gap: 12px;
+        align-items: center;
     }
 
     #cartButton,
     #statsButton {
         bottom: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom));
     }
 }
