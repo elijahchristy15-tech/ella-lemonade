@@ -74,6 +74,10 @@
     &#128722; Cart <span id="cartCount">0</span>
   </button>
 
+  <button type="button" id="gameButton" onclick="openGame()">
+    &#127819; Game
+  </button>
+
   <div id="cartModal" class="modal">
     <div class="cart-box">
       <button type="button" class="close-cart" onclick="closeCart()">
@@ -123,6 +127,52 @@
     &#128202; Stats
   </button>
 
+  <div id="gameModal" class="modal">
+    <div class="cart-box game-box">
+      <button type="button" class="close-cart" onclick="closeGame()">
+        &times;
+      </button>
+      <h2>&#127819; Lemon Catch</h2>
+      <p id="gameStatus" class="game-status" aria-live="polite">
+        Catch fruit and water for the stand. Dodge the pickles.
+      </p>
+
+      <div class="game-scoreboard">
+        <div>
+          <span>Score</span>
+          <strong id="gameScore">0</strong>
+        </div>
+        <div>
+          <span>Time</span>
+          <strong id="gameTime">20</strong>
+        </div>
+        <div>
+          <span>Lives</span>
+          <strong id="gameLives">3</strong>
+        </div>
+        <div>
+          <span>Best</span>
+          <strong id="gameBest">0</strong>
+        </div>
+      </div>
+
+      <div id="gameBoard" class="game-board" aria-label="Lemon Catch game board">
+        <div id="gamePlayer" class="game-player" aria-hidden="true">
+          &#129380;
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="game-start-button"
+        id="gameStartButton"
+        onclick="startGame()"
+      >
+        Start Game
+      </button>
+    </div>
+  </div>
+
   <div id="statsModal" class="modal">
     <div class="cart-box stats-box">
       <button type="button" class="close-cart" onclick="closeStats()">
@@ -168,9 +218,6 @@
     </div>
   </div>
 
-  <footer>
-    Made by Eli. Lemonade stand by Ella. 605 Sandycrest Dr. 08/01/2026
-  </footer>
 
   <script src="venmo.js"></script>
 </body>

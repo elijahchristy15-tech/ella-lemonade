@@ -383,6 +383,26 @@ button {
     margin: 5px;
 }
 
+#gameButton {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #0e8b69;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+    z-index: 500;
+}
+
+#gameButton:hover {
+    transform: translateX(-50%) translateY(-2px);
+}
+
 /* =========================
    OWNER STATS BUTTON
 ========================= */
@@ -424,6 +444,127 @@ button {
 
 .stats-box {
     max-width: 500px;
+}
+
+.game-box {
+    max-width: 560px;
+}
+
+.game-status {
+    margin: 8px 0 0;
+    color: #555;
+    font-size: 15px;
+}
+
+.game-scoreboard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 18px 0;
+    border: 1px solid #ece2ad;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff8d9;
+}
+
+.game-scoreboard div {
+    padding: 12px 8px;
+    border-right: 1px solid #ece2ad;
+}
+
+.game-scoreboard div:last-child {
+    border-right: none;
+}
+
+.game-scoreboard span {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    color: #7b6d22;
+    text-transform: uppercase;
+}
+
+.game-scoreboard strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 22px;
+}
+
+.game-board {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    min-height: 320px;
+    border-radius: 18px;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, #7dd3fc 0%, #c0efff 58%, #f9dc74 58%, #efb04d 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.08),
+        inset 0 -24px 40px rgba(255, 255, 255, 0.18);
+    touch-action: none;
+    user-select: none;
+}
+
+.game-board::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.1) 0 14px,
+            rgba(255, 255, 255, 0) 14px 28px
+        );
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.game-player {
+    position: absolute;
+    left: 0;
+    bottom: 16px;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    transform: translateX(0);
+}
+
+.game-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.game-item.good {
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
+}
+
+.game-item.bad {
+    filter: drop-shadow(0 6px 12px rgba(140, 31, 21, 0.28));
+}
+
+.game-start-button {
+    width: 100%;
+    margin-top: 14px;
+    background: #0e8b69;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.game-start-button:hover {
+    transform: translateY(-1px);
 }
 
 .stats-grid {
@@ -582,7 +723,7 @@ button {
 
 @media (max-width: 600px) {
     body {
-        padding: 20px 20px 104px;
+        padding: 20px 20px 156px;
     }
 
     .stats-grid {
@@ -608,9 +749,35 @@ button {
         align-items: center;
     }
 
+    .game-scoreboard {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .game-scoreboard div {
+        border-right: none;
+        border-bottom: 1px solid #ece2ad;
+    }
+
+    .game-scoreboard div:nth-child(odd) {
+        border-right: 1px solid #ece2ad;
+    }
+
+    .game-scoreboard div:nth-last-child(-n + 2) {
+        border-bottom: none;
+    }
+
+    .game-board {
+        min-height: 280px;
+    }
+
     #cartButton,
     #statsButton {
         bottom: 16px;
         bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+
+    #gameButton {
+        bottom: 72px;
+        bottom: calc(72px + env(safe-area-inset-bottom));
     }
 }
