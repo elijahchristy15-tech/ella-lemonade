@@ -84,6 +84,7 @@
       <div class="cart-total">
         Total: $<span id="cartTotal">0.00</span>
       </div>
+      <button type="button" class="tip-1-button" onclick="AddTip()">&#x1FAD9; Tip $1</button>
       <button type="button" class="checkout-button" onclick="openCheckout()">
         Checkout
       </button>
@@ -105,6 +106,12 @@
       <button type="button" class="venmo-button" onclick="payWithVenmo()">
         &#128153; Open Venmo
       </button>
+
+
+      <button type="button" class="tip-jar" onclick="TipJar()">
+        &#x1FAD9; Tip Jar
+      </button>
+
       <button type="button" class="paid-button" onclick="confirmPayment()">
         &#9989; I've Paid
       </button>
@@ -152,6 +159,7 @@
         <p>&#127825; Peach Lemonade <strong id="statPeach">0</strong></p>
         <p>&#129362; Pickles <strong id="statPickle">0</strong></p>
         <p>&#128167; Water <strong id="statWater">0</strong></p>
+        <p>&#x1FAD9; Tips <strong id="statTip">0</strong></p>
       </div>
 
       <button type="button" class="reset-stats" onclick="resetStats()">

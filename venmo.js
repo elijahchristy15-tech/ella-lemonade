@@ -2,6 +2,8 @@
 
 const VENMO_USERNAME = "Crystal-Christy";
 const SALES_STORAGE_KEY = "lemonadeSales";
+const TIP_PRODUCT_NAME = "Tip";
+const TIP_AMOUNT = 1;
 const EMPTY_STATS = Object.freeze({
   money: 0,
   orders: 0,
@@ -11,7 +13,8 @@ const EMPTY_STATS = Object.freeze({
   raspberry: 0,
   peach: 0,
   pickle: 0,
-  water: 0
+  water: 0,
+  tip: 0
 });
 
 let cart = [];
@@ -53,6 +56,7 @@ function renderStats(stats) {
   document.getElementById("statPeach").textContent = String(stats.peach);
   document.getElementById("statPickle").textContent = String(stats.pickle);
   document.getElementById("statWater").textContent = String(stats.water);
+  document.getElementById("statTip").textContent = String(stats.tip);
 }
 
 function applyItemToStats(stats, sale) {
@@ -74,6 +78,8 @@ function applyItemToStats(stats, sale) {
     stats.pickle += quantity;
   } else if (sale.product === "Water") {
     stats.water += quantity;
+  } else if (sale.product === TIP_PRODUCT_NAME) {
+    stats.tip += quantity;
   }
 }
 
@@ -131,6 +137,29 @@ function getFlavorName() {
   return null;
 }
 
+function addCartItem(name, price, quantity = 1) {
+  const normalizedPrice = Number(price);
+  const normalizedQuantity = Number(quantity) || 0;
+
+  if (!name || !Number.isFinite(normalizedPrice) || normalizedQuantity <= 0) {
+    return;
+  }
+
+  const existingItem = cart.find((item) => item.name === name);
+
+  if (existingItem) {
+    existingItem.quantity += normalizedQuantity;
+  } else {
+    cart.push({
+      name: name,
+      price: normalizedPrice,
+      quantity: normalizedQuantity
+    });
+  }
+
+  updateCart();
+}
+
 function addToCart(button) {
   const card = button.closest(".card");
   let name = card.dataset.name;
@@ -144,19 +173,7 @@ function addToCart(button) {
     }
   }
 
-  const existingItem = cart.find((item) => item.name === name);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({
-      name: name,
-      price: price,
-      quantity: 1
-    });
-  }
-
-  updateCart();
+  addCartItem(name, price);
 
   button.textContent = "Added!";
 
@@ -175,7 +192,8 @@ function updateCart() {
   cartItems.innerHTML = "";
 
   cart.forEach((item, index) => {
-    const itemTotal = item.price * item.quantity;
+    const itemPrice = Number(item.price) || 0;
+    const itemTotal = itemPrice * item.quantity;
     const itemElement = document.createElement("div");
 
     total += itemTotal;
@@ -185,7 +203,7 @@ function updateCart() {
     itemElement.innerHTML =
       '<div class="cart-item-info">' +
       '  <div class="cart-item-name">' + item.name + "</div>" +
-      '  <div class="cart-item-price">$' + item.price.toFixed(2) + " each</div>" +
+      '  <div class="cart-item-price">$' + itemPrice.toFixed(2) + " each</div>" +
       "</div>" +
       '<div class="quantity-controls">' +
       '  <button type="button" onclick="changeQuantity(' + index + ', -1)">&minus;</button>' +
@@ -270,6 +288,16 @@ function payWithVenmo() {
   window.open(venmoUrl, "_blank", "noopener");
 }
 
+function TipJar() {
+  const TipUrl = "https://venmo.com/u/" + VENMO_USERNAME
+  window.open(TipUrl, "_blank", "noopener")
+}
+
+function AddTip() {
+  addCartItem(TIP_PRODUCT_NAME, TIP_AMOUNT);
+}
+
+
 function recordSale() {
   if (cart.length === 0) {
     return false;
@@ -285,7 +313,7 @@ function recordSale() {
     order_id: orderId,
     product: item.name,
     quantity: item.quantity,
-    amount: item.price * item.quantity,
+    amount: (Number(item.price) || 0) * item.quantity,
     created_at: new Date().toISOString()
   }));
 

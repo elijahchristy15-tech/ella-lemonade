@@ -228,6 +228,21 @@ footer {
     opacity: 0.85;
 }
 
+.tip-jar {
+    background: #e45d01;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.tip-jar:hover {
+    opacity: 0.85;
+}
 .paid-btn,
 .paid-button {
     background: #28a745;
@@ -354,6 +369,18 @@ button {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     z-index: 500;
     transition: 0.2s;
+}
+
+.tip-1-button {
+    background: #1c7019;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
 }
 
 /* =========================
@@ -505,6 +532,7 @@ button {
 
 .checkout-button,
 .venmo-button,
+.tip-jar,
 .paid-button {
     width: 100%;
     margin-top: 12px;
