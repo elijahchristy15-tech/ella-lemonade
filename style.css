@@ -2,7 +2,8 @@
     --bg1: #fffd00;
     --bg2: #ff6900;
     --accent: #ffa800;
-    --card: rgba(255, 255, 255, 0.18);
+    --accent2: #002aff;
+    --card: rgb(0 42 255);
 }
 
 * {
@@ -32,7 +33,7 @@ body {
                     135deg,
                     var(--bg1) 0%,
                     var(--bg2) 55%,
-                    #095700 100%
+                    var(--accent2) 100%
             );
 
     background-attachment: fixed;
